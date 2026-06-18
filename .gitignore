@@ -1,0 +1,7 @@
+# dados brutos pesados (baixar do Kaggle)
+data/*.csv
+data/processed/*.csv
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
