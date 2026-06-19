@@ -22,8 +22,10 @@ techchallenge-olist/
 │   ├── data_prep.py           # ETL: 9 tabelas -> tabela analítica por pedido
 │   ├── analysis.py            # EDA, insights e simulação -> figuras + achados
 │   ├── model.py               # modelo preditivo (risco de avaliação negativa)
-│   └── export_bi.py           # exporta modelo em estrela para Power BI (data/bi/)
+│   ├── export_bi.py           # exporta modelo em estrela para Power BI (data/bi/)
+│   └── dashboard.py           # dashboard interativo (HTML) estilo BI
 ├── figures/                   # 8 gráficos executivos (PNG)
+├── dashboard/                 # dashboard_olist.html (interativo) + .png
 ├── report/relatorio_executivo.md
 ├── presentation/apresentacao.md
 ├── requirements.txt
