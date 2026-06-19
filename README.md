@@ -21,7 +21,8 @@ techchallenge-olist/
 ├── src/
 │   ├── data_prep.py           # ETL: 9 tabelas -> tabela analítica por pedido
 │   ├── analysis.py            # EDA, insights e simulação -> figuras + achados
-│   └── model.py               # modelo preditivo (risco de avaliação negativa)
+│   ├── model.py               # modelo preditivo (risco de avaliação negativa)
+│   └── export_bi.py           # exporta modelo em estrela para Power BI (data/bi/)
 ├── figures/                   # 8 gráficos executivos (PNG)
 ├── report/relatorio_executivo.md
 ├── presentation/apresentacao.md
@@ -36,6 +37,7 @@ pip install -r requirements.txt
 python src/data_prep.py     # gera data/processed/order_master.csv
 python src/analysis.py      # gera figures/ (01-07) e imprime os achados-chave
 python src/model.py         # modelo preditivo -> figures/08 + ranking de fatores
+python src/export_bi.py     # gera data/bi/ (modelo p/ Power BI) — ver presentation/guia_powerbi.md
 ```
 
 ## 🔎 Decisões metodológicas (governança)

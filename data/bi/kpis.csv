@@ -1,0 +1,10 @@
+indicador,valor,formato
+Receita total (jan17-ago18),13541713.0,R$
+Pedidos (jan17-ago18),99092.0,num
+Ticket medio,137.68,R$
+Taxa de recompra (%),3.12,%
+Prazo medio de entrega (dias),12.6,num
+Pedidos atrasados (%),8.1,%
+Nota media no prazo,4.29,num
+Nota media atrasado,2.57,num
+Receita exposta a atraso (R$),1158921.0,R$

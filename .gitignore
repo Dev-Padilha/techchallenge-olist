@@ -1,6 +1,8 @@
 # dados brutos pesados (baixar do Kaggle)
 data/*.csv
 data/processed/*.csv
+# tabela-fato do BI e pesada (regerar com src/export_bi.py); agregados pequenos sao versionados
+data/bi/fato_pedidos.csv
 __pycache__/
 *.pyc
 .DS_Store
