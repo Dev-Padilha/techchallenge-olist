@@ -2,6 +2,8 @@
 
 O paradoxo do crescimento: a Olist vende mais, mas a entrega ameaça o futuro.
 
+**Vídeo da apresentação (até 5 min):** https://drive.google.com/drive/folders/1JmX-atXTjN-u-ow-0nSc_cv8TDrOjRUn?usp=sharing
+
 Análise do *Brazilian E-Commerce Public Dataset by Olist* (2016–2018), transformando dados
 transacionais numa tese de investimento. A ideia central é que a Olist é um negócio movido a
 aquisição, cuja reputação (um ativo estratégico) está sendo corroída pelos atrasos de entrega.
