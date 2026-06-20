@@ -22,13 +22,13 @@ techchallenge-olist/
 │   ├── data_prep.py           # ETL: 9 tabelas -> tabela analítica por pedido
 │   ├── analysis.py            # EDA, insights e simulação -> figuras + achados
 │   ├── model.py               # modelo preditivo (risco de avaliação negativa)
-│   ├── export_bi.py           # exporta o modelo em estrela (data/bi/), fonte do dashboard
-│   ├── export_excel.py        # gera o dashboard executivo pronto em Excel (.xlsx)
-│   └── dashboard.py           # dashboard interativo (HTML) estilo BI
+│   ├── export_bi.py           # gera o modelo em estrela (data/bi/), fonte do dashboard
+│   ├── export_excel.py        # gera o dashboard executivo em Excel (.xlsx)
+│   └── build_video.py         # monta o vídeo executivo (slides + narração)
 ├── figures/                   # 8 gráficos executivos (PNG)
-├── dashboard/                 # dashboard_olist.xlsx (Excel, pronto) + .html + .png
+├── dashboard/                 # dashboard_olist.xlsx (Excel, pronto para abrir)
 ├── report/relatorio_executivo.md
-├── presentation/apresentacao.md
+├── presentation/              # apresentacao.md, roteiro_video.md, video_olist.mp4
 ├── requirements.txt
 └── README.md
 ```
@@ -47,8 +47,8 @@ python src/export_excel.py  # gera dashboard/dashboard_olist.xlsx (Excel, pronto
 ## Dashboard (Excel)
 `dashboard/dashboard_olist.xlsx` é o painel executivo de uma página, já montado, com KPIs e
 quatro gráficos. Ele conta a mesma história do relatório: crescimento, risco logístico, o
-atraso destruindo reputação e o valor de agir. Abre em Excel, Google Sheets ou Numbers, sem
-depender de Power BI ou Windows. Para regenerar: `python src/export_excel.py`.
+atraso destruindo reputação e o valor de agir. Abre em qualquer editor de planilhas (Excel,
+Google Sheets ou Numbers). Para regenerar: `python src/export_excel.py`.
 
 ## Decisões metodológicas
 - Cliente real é `customer_unique_id`, não `customer_id`.

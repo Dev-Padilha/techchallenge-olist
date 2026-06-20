@@ -1,9 +1,9 @@
 """
 export_excel.py — Gera o dashboard executivo em Excel (.xlsx) a partir de data/bi/.
 
-Substitui o Power BI: um único arquivo `dashboard/dashboard_olist.xlsx` com uma página
-"Dashboard" que conta a mesma história do relatorio (Crescimento -> Risco logistico ->
-Atraso destroi reputacao -> Valor de agir), alimentada por abas de dados nativas do Excel.
+Um único arquivo `dashboard/dashboard_olist.xlsx` com uma página "Dashboard" que conta a
+mesma história do relatorio (Crescimento -> Risco logistico -> Atraso destroi reputacao ->
+Valor de agir), alimentada por abas de dados nativas do Excel.
 
 Uso:
     python src/export_excel.py
@@ -12,7 +12,7 @@ Pre-requisito: data/bi/*.csv (gere com `python src/export_bi.py`).
 from pathlib import Path
 import pandas as pd
 from openpyxl import Workbook
-from openpyxl.chart import BarChart, LineChart, Reference, Series
+from openpyxl.chart import BarChart, Reference
 from openpyxl.chart.label import DataLabelList
 from openpyxl.chart.shapes import GraphicalProperties
 from openpyxl.drawing.line import LineProperties

@@ -1,8 +1,8 @@
 """
 ================================================================================
- Tech Challenge Olist | Export para Power BI
+ Tech Challenge Olist | Modelo em estrela do dashboard
 --------------------------------------------------------------------------------
- Gera, em data/bi/, um modelo pronto para o Power BI:
+ Gera, em data/bi/, um modelo em estrela que alimenta o dashboard (src/export_excel.py):
    - fato_pedidos.csv      : tabela-fato (1 linha = 1 pedido), nomes amigaveis
    - agg_mensal.csv        : serie mensal (receita, pedidos, ticket, atraso, nota)
    - agg_estado.csv        : desempenho por UF (mapa/risco logistico)
@@ -10,7 +10,7 @@
    - tab_atraso_nota.csv   : relacao atraso x nota (dose-resposta)
    - tab_simulacao.csv     : cenarios de receita protegida
    - kpis.csv              : indicadores-cabecalho (cartoes)
- Basta "Obter Dados > Pasta" apontando para data/bi/.
+ O dashboard em Excel e gerado a partir desses CSVs por src/export_excel.py.
 ================================================================================
 """
 import os
