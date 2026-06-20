@@ -10,3 +10,6 @@ __pycache__/
 
 # lock temporario do Excel
 ~$*
+
+# intermediarios do gerador de video (regerar com src/build_video.py)
+build_video/
