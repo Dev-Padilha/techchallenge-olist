@@ -14,6 +14,8 @@ import pandas as pd
 from openpyxl import Workbook
 from openpyxl.chart import BarChart, LineChart, Reference, Series
 from openpyxl.chart.label import DataLabelList
+from openpyxl.chart.shapes import GraphicalProperties
+from openpyxl.drawing.line import LineProperties
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.utils.dataframe import dataframe_to_rows
@@ -70,7 +72,32 @@ def kpi_card(ws, anchor_col, row, titulo, valor, cor=AZUL):
             if rr == row:
                 cell.fill = PatternFill("solid", fgColor=cor)
             else:
-                cell.fill = PatternFill("solid", fgColor=CINZA_CLARO)
+                cell.fill = PatternFill("solid", fgColor=BRANCO)
+
+
+def value_labels():
+    """Rotulo de dados mostrando SO o valor (sem nome da serie nem categoria)."""
+    dl = DataLabelList()
+    dl.showVal = True
+    dl.showSerName = False
+    dl.showCatName = False
+    dl.showLegendKey = False
+    dl.showPercent = False
+    dl.showBubbleSize = False
+    return dl
+
+
+def style_chart(chart):
+    """Tira as linhas de grade e deixa o grafico com cara de cartao de dashboard."""
+    for ax in (chart.y_axis, chart.x_axis):
+        ax.majorGridlines = None
+        ax.minorGridlines = None
+        ax.delete = False
+    # fundo branco do grafico, borda fina (cartao) sobre o canvas cinza
+    chart.graphical_properties = GraphicalProperties(
+        solidFill="FFFFFF", ln=LineProperties(solidFill="E2E6EA", w=9525))
+    # area de plotagem sem preenchimento (so o branco do cartao aparece)
+    chart.plot_area.graphicalProperties = GraphicalProperties(noFill=True)
 
 
 def main():
@@ -93,21 +120,34 @@ def main():
     ws_cat = write_data_sheet(wb, categoria, "dados_categoria")
     ws_est = write_data_sheet(wb, estado, "dados_estado")
 
-    # ---- cabecalho ----
-    dash.merge_cells("A1:R1")
-    h = dash["A1"]
-    h.value = "OLIST  —  O paradoxo do crescimento: vende mais, mas a entrega ameaca o futuro"
-    h.font = Font(bold=True, size=18, color=AZUL)
-    h.alignment = Alignment(horizontal="left", vertical="center")
-    dash.row_dimensions[1].height = 30
-    dash.merge_cells("A2:R2")
-    s = dash["A2"]
-    s.value = "Tech Challenge — Data Analytics | Brazilian E-Commerce Public Dataset by Olist (2017–2018) | Publico: investidores e diretoria"
-    s.font = Font(italic=True, size=10, color=CINZA)
+    # ---- canvas do dashboard (fundo cinza claro atras de tudo) ----
+    canvas_fill = PatternFill("solid", fgColor=CINZA_CLARO)
+    for r in range(1, 45):
+        for col in range(1, 19):
+            dash.cell(row=r, column=col).fill = canvas_fill
 
     # largura base das colunas
     for col in range(1, 19):
         dash.column_dimensions[get_column_letter(col)].width = 9
+
+    # ---- faixa de titulo (header) ----
+    dash.merge_cells("A1:R2")
+    header_fill = PatternFill("solid", fgColor=AZUL)
+    for r in (1, 2):
+        for col in range(1, 19):
+            dash.cell(row=r, column=col).fill = header_fill
+    h = dash["A1"]
+    h.value = "OLIST    O paradoxo do crescimento: vende mais, mas a entrega ameaça o futuro"
+    h.font = Font(bold=True, size=18, color=BRANCO)
+    h.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+    dash.row_dimensions[1].height = 24
+    dash.row_dimensions[2].height = 16
+
+    dash.merge_cells("A3:R3")
+    s = dash["A3"]
+    s.value = "Tech Challenge · Data Analytics · Olist 2017–2018 · Público: investidores e diretoria"
+    s.font = Font(italic=True, size=10, color=CINZA)
+    s.alignment = Alignment(horizontal="left", indent=1)
 
     # ---- linha de KPIs (5 cartoes) ----
     kv = {row["indicador"]: row for _, row in kpis.iterrows()}
@@ -125,90 +165,85 @@ def main():
     # banda de contexto sob os KPIs
     dash.merge_cells("A7:R7")
     band = dash["A7"]
-    band.value = ("Negocio movido a aquisicao (recompra 10x abaixo do mercado ~28%)  →  reputacao e o ativo critico  "
-                  "→  atraso derruba a nota (4,29 → 2,57) e expoe R$ 1,2 mi de receita.")
+    band.value = ("Negócio movido a aquisição (recompra 10x abaixo do mercado ~28%)  →  reputação é o ativo crítico  "
+                  "→  atraso derruba a nota (4,29 → 2,57) e expõe R$ 1,2 mi de receita.")
     band.font = Font(size=9, italic=True, color=CINZA)
-    band.alignment = Alignment(horizontal="left", vertical="center")
+    band.alignment = Alignment(horizontal="left", vertical="center", indent=1)
 
-    # ============ GRAFICO A: Receita mensal + nota media (combo) ============
+    # ============ GRAFICO A: Receita mensal ============
     n = len(mensal)
     bar = BarChart()
     bar.type = "col"
     bar.title = "Crescimento da receita ao longo do tempo (estabiliza em 2018)"
-    bar.height = 7.5
-    bar.width = 16
+    bar.height = 7.0
+    bar.width = 13.5
     data = Reference(ws_mensal, min_col=3, min_row=1, max_row=n + 1)  # receita
     cats = Reference(ws_mensal, min_col=1, min_row=2, max_row=n + 1)  # ano_mes
     bar.add_data(data, titles_from_data=True)
     bar.set_categories(cats)
-    bar.y_axis.title = "Receita (R$)"
     bar.series[0].graphicalProperties.solidFill = AZUL
-
-    line = LineChart()
-    ldata = Reference(ws_mensal, min_col=6, min_row=1, max_row=n + 1)  # nota_media
-    line.add_data(ldata, titles_from_data=True)
-    line.y_axis.axId = 200
-    line.y_axis.title = "Nota media"
-    line.series[0].graphicalProperties.line.solidFill = LARANJA
-    line.series[0].graphicalProperties.line.width = 28000
-    bar.y_axis.crosses = "autoZero"
-    line.y_axis.crosses = "max"
-    bar += line
-    bar.legend.position = "b"
+    bar.legend = None
+    style_chart(bar)
     dash.add_chart(bar, "A9")
 
     # ============ GRAFICO B: Atraso x Nota (o "aha") ============
     b = BarChart()
     b.type = "col"
     b.title = "Quanto mais atrasa, pior a nota (dose-resposta)"
-    b.height = 7.5
-    b.width = 16
+    b.height = 7.0
+    b.width = 13.5
     bdata = Reference(ws_atraso, min_col=2, min_row=1, max_row=len(atraso) + 1)  # nota_media
     bcats = Reference(ws_atraso, min_col=1, min_row=2, max_row=len(atraso) + 1)
     b.add_data(bdata, titles_from_data=True)
     b.set_categories(bcats)
     b.series[0].graphicalProperties.solidFill = VERMELHO
-    b.dataLabels = DataLabelList()
-    b.dataLabels.showVal = True
+    b.dataLabels = value_labels()
     b.legend = None
-    b.y_axis.title = "Nota media (1-5)"
+    style_chart(b)
     dash.add_chart(b, "J9")
 
     # ============ GRAFICO C: Simulacao (valor de agir) ============
     c = BarChart()
     c.type = "col"
     c.title = "Valor de agir: receita protegida ao reduzir atrasos (R$)"
-    c.height = 7.5
-    c.width = 16
+    c.height = 7.0
+    c.width = 13.5
     cdata = Reference(ws_simul, min_col=3, min_row=1, max_row=len(simul) + 1)  # receita_protegida
     ccats = Reference(ws_simul, min_col=1, min_row=2, max_row=len(simul) + 1)
     c.add_data(cdata, titles_from_data=True)
     c.set_categories(ccats)
     c.series[0].graphicalProperties.solidFill = VERDE
-    c.dataLabels = DataLabelList()
-    c.dataLabels.showVal = True
+    c.dataLabels = value_labels()
     c.legend = None
-    dash.add_chart(c, "A25")
+    style_chart(c)
+    dash.add_chart(c, "A27")
 
     # ============ GRAFICO D: Top categorias por receita ============
     d = BarChart()
     d.type = "bar"
     d.title = "Top categorias por receita (R$)"
-    d.height = 7.5
-    d.width = 16
+    d.height = 7.0
+    d.width = 13.5
     ddata = Reference(ws_cat, min_col=3, min_row=1, max_row=len(categoria) + 1)  # receita
     dcats = Reference(ws_cat, min_col=1, min_row=2, max_row=len(categoria) + 1)
     d.add_data(ddata, titles_from_data=True)
     d.set_categories(dcats)
     d.series[0].graphicalProperties.solidFill = AZUL
     d.legend = None
-    dash.add_chart(d, "J25")
+    style_chart(d)
+    dash.add_chart(d, "J27")
 
     # rodape sintese
-    dash.merge_cells("A41:R41")
-    foot = dash["A41"]
-    foot.value = "Logistica nao e custo — e a alavanca que protege o crescimento. Reduzir atrasos em 50% protege ~R$ 579 mil e evita ~1.755 detratores."
-    foot.font = Font(bold=True, size=10, color=AZUL)
+    dash.merge_cells("A43:R43")
+    foot = dash["A43"]
+    foot.fill = PatternFill("solid", fgColor=AZUL)
+    foot.value = ("Logística não é custo: é a alavanca que protege o crescimento.   "
+                  "Reduzir atrasos em 50% protege ~R$ 579 mil e evita ~1.755 detratores.")
+    foot.font = Font(bold=True, size=11, color=BRANCO)
+    foot.alignment = Alignment(horizontal="left", vertical="center", indent=1)
+    for col in range(1, 19):
+        dash.cell(row=43, column=col).fill = PatternFill("solid", fgColor=AZUL)
+    dash.row_dimensions[43].height = 22
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     wb.save(OUT)
